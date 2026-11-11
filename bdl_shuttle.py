@@ -24,7 +24,7 @@ _Base = hass.Hass if hass else object
 class BdlShuttle(_Base):
     def initialize(self):
         a = self.args
-        self.tz = dt.timezone(dt.timedelta(hours=int(a.get("utc_offset_h",
+        self.local_tz = dt.timezone(dt.timedelta(hours=int(a.get("utc_offset_h",
                                                            -7))))
         self.api_key = str(a["api_key"])
         self.say_event = a.get("say_event", "announcer.say")
@@ -34,7 +34,7 @@ class BdlShuttle(_Base):
         self.store = sh_engine.SqliteStore(
             os.path.join(here, a.get("db", "bdl_shuttle.db")))
         self.engine = sh_engine.Engine(
-            self.store, self._announce, self._say, self.tz,
+            self.store, self._announce, self._say, self.local_tz,
             message=a.get("message", sh_engine.DEFAULT_MESSAGE),
             max_active=a.get("max_active", 5),
             max_lead_min=a.get("max_lead_min", 60),
