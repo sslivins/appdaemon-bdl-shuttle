@@ -41,10 +41,14 @@ class BdlShuttle(_Base):
             keep_h=a.get("keep_h", 24),
             default_stop=a.get("stop", "Lookout Ridge"),
             default_destination=a.get("destination", "the Village"))
-        self.register_endpoint(self._endpoint, "bdl_shuttle")
+        # AppDaemon 4.5 keeps endpoints across app reloads (a re-register
+        # silently fails and the old instance keeps answering), so the
+        # handle is dropped again in terminate().
+        self._ep = self.register_endpoint(self._endpoint, "bdl_shuttle")
         self.run_every(self._tick, "now+5", int(a.get("poll_s", 30)))
-        self._say("initialized (%d pending, event=%s)" % (
-            len(self.engine.list()["reminders"]), self.say_event))
+        self._say("initialized (%d pending, event=%s, tz=%s, now=%s)" % (
+            len(self.engine.list()["reminders"]), self.say_event,
+            self.local_tz, self.engine.list()["now"]))
 
     def terminate(self):
         self.store.close()
