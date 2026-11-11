@@ -1,0 +1,24 @@
+bdl_shuttle:
+  module: bdl_shuttle
+  class: BdlShuttle
+  log: bdl_shuttle_log
+
+  # Shared secret callers (BlackDiamondHub) send as the X-API-Key header.
+  api_key: !secret bdl_shuttle_api_key
+
+  # Sun Peaks is on permanent UTC-7 (BC "Pacific time") from Nov 2026.
+  utc_offset_h: -7
+  poll_s: 30
+  max_active: 5          # pending reminders at once
+  max_lead_min: 60
+
+  # Handed to the announcer app (ducking, chime, quiet hours live there).
+  say_event: announcer.say
+  # speakers: [media_player.dining_room]   # announcer default
+  # volume: 0.35
+  # chime: true
+
+  stop: Lookout Ridge
+  destination: the Village
+  # {minutes} -> "10 minutes" / "1 minute"
+  message: "Heads up! The shuttle to {destination} reaches {stop} in about {minutes}. Time to put your boots on!"
